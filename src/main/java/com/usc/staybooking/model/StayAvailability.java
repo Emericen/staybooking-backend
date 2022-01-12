@@ -4,19 +4,21 @@ import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+import java.io.Serializable;
+
 
 @Entity
 @Table(name = "stay_availability")
 @JsonDeserialize(builder = StayAvailability.Builder.class)
-public class StayAvailability {
+public class StayAvailability implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @EmbeddedId
     private StayAvailabilityKey id;
 
-    @MapsId("stay_id")
     @ManyToOne
+    @MapsId("stay_id")
     private Stay stay;
 
     private StayAvailabilityState state;

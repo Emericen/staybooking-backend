@@ -5,12 +5,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "stay")
 @JsonDeserialize(builder = Stay.Builder.class)
-public class Stay {
+public class Stay implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,7 +35,13 @@ public class Stay {
     public Stay() {}
 
     private Stay(Builder builder) {
-
+        this.id = builder.id;
+        this.name = builder.name;
+        this.description = builder.description;
+        this.address = builder.address;
+        this.guestNumber = builder.guestNumber;
+        this.host = builder.host;
+        this.availabilities = builder.availabilities;
     }
 
     public Long getId() {

@@ -1,9 +1,15 @@
 package com.usc.staybooking.model;
 
+
+import javax.persistence.Embeddable;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class StayAvailabilityKey {
+@Embeddable
+public class StayAvailabilityKey implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private Long stay_id;
     private LocalDate date;
 
