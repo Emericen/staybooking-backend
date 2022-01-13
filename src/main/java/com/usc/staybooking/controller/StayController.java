@@ -1,9 +1,12 @@
 package com.usc.staybooking.controller;
 
+import com.usc.staybooking.exception.StayNotFoundException;
 import com.usc.staybooking.model.Stay;
+import com.usc.staybooking.model.User;
 import com.usc.staybooking.service.StayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,17 +22,37 @@ public class StayController {
     @GetMapping(value = "/stays")
     public List<Stay> listStays(@RequestParam(name = "host") String hostName) {
         return stayService.listByUser(hostName);
+//        return stayService.findByHost(principal.getName());
     }
 
     @GetMapping(value = "/stays/{stayId}")
     public Stay getStay(@PathVariable Long stayId) {
+
         return stayService.findByIdAndHost(stayId);
     }
 
+//    @PostMapping("/stays")
+//    public void addStay(@RequestBody Stay stay) {
+//        stayService.add(stay);
+//    }
+
     @PostMapping("/stays")
-    public void addStay(@RequestBody Stay stay) {
-        stayService.add(stay);
+    public void addStay(
+            @RequestParam("name") String name,
+            @RequestParam("address") String address,
+            @RequestParam("description") String description,
+            @RequestParam("host") String host,
+            @RequestParam("guest_number") int guestNumber,
+            @RequestParam("images") MultipartFile[] images) {
+        Stay stay = new Stay.Builder().setName(name)
+                .setAddress(address)
+                .setDescription(description)
+                .setGuestNumber(guestNumber)
+                .setHost(new User.Builder().setUsername(host).build())
+                .build();
+        stayService.add(stay, images);
     }
+
 
     @DeleteMapping("/stays/{stayId}")
     public void deleteStay(@PathVariable Long stayId) {
