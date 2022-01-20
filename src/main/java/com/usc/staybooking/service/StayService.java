@@ -2,6 +2,7 @@ package com.usc.staybooking.service;
 
 import com.usc.staybooking.exception.StayNotFoundException;
 import com.usc.staybooking.model.*;
+import com.usc.staybooking.repository.LocationRepository;
 import com.usc.staybooking.repository.StayRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,12 +17,17 @@ import java.util.stream.Collectors;
 @Service
 public class StayService {
     private StayRepository stayRepository;
+    private LocationRepository locationRepository;
     private ImageStorageService imageStorageService;
+    private GeoEncodingService geoEncodingService;
+
 
     @Autowired
-    public StayService(StayRepository stayRepository, ImageStorageService imageStorageService) {
+    public StayService(StayRepository stayRepository, LocationRepository locationRepository, ImageStorageService imageStorageService, GeoEncodingService geoEncodingService) {
         this.stayRepository = stayRepository;
+        this.locationRepository = locationRepository;
         this.imageStorageService = imageStorageService;
+        this.geoEncodingService = geoEncodingService;
     }
 
     public List<Stay> listByUser(String username) {
@@ -53,9 +59,9 @@ public class StayService {
             stayImages.add(new StayImage(mediaLink, stay));
         }
         stay.setImages(stayImages);
-
         stayRepository.save(stay);
-
+        Location location = geoEncodingService.getLatLng(stay.getId(), stay.getAddress());
+        locationRepository.save(location);
     }
 
     public void delete(Long stayId) {

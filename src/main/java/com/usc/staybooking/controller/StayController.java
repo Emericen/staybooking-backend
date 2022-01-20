@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -41,14 +42,14 @@ public class StayController {
             @RequestParam("name") String name,
             @RequestParam("address") String address,
             @RequestParam("description") String description,
-            @RequestParam("host") String host,
             @RequestParam("guest_number") int guestNumber,
-            @RequestParam("images") MultipartFile[] images) {
+            @RequestParam("images") MultipartFile[] images,
+            Principal principal) {
         Stay stay = new Stay.Builder().setName(name)
                 .setAddress(address)
                 .setDescription(description)
                 .setGuestNumber(guestNumber)
-                .setHost(new User.Builder().setUsername(host).build())
+                .setHost(new User.Builder().setUsername(principal.getName()).build())
                 .build();
         stayService.add(stay, images);
     }

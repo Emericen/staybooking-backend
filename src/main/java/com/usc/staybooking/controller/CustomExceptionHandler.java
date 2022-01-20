@@ -1,8 +1,6 @@
 package com.usc.staybooking.controller;
 
-import com.usc.staybooking.exception.StayNotFoundException;
-import com.usc.staybooking.exception.UserAlreadyExistException;
-import com.usc.staybooking.exception.UserNotExistException;
+import com.usc.staybooking.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -26,5 +24,15 @@ public class CustomExceptionHandler {
     @ExceptionHandler(StayNotFoundException.class)
     public final ResponseEntity<String> handleStayNotFoundExceptions(Exception ex, WebRequest request) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(GeoEncodingException.class)
+    public final ResponseEntity<String> handleGeoEncodingExceptions(Exception ex, WebRequest request) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(InvalidStayAddressException.class)
+    public final ResponseEntity<String> handleInvalidStayAddressExceptions(Exception ex, WebRequest request) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
