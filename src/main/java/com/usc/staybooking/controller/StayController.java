@@ -1,8 +1,10 @@
 package com.usc.staybooking.controller;
 
 import com.usc.staybooking.exception.StayNotFoundException;
+import com.usc.staybooking.model.Reservation;
 import com.usc.staybooking.model.Stay;
 import com.usc.staybooking.model.User;
+import com.usc.staybooking.service.ReservationService;
 import com.usc.staybooking.service.StayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +16,12 @@ import java.util.List;
 @RestController
 public class StayController {
     private StayService stayService;
+    private ReservationService reservationService;
 
     @Autowired
-    public StayController(StayService stayService) {
+    public StayController(StayService stayService, ReservationService reservationService) {
         this.stayService = stayService;
+        this.reservationService = reservationService;
     }
 
     @GetMapping(value = "/stays")
@@ -59,4 +63,10 @@ public class StayController {
     public void deleteStay(@PathVariable Long stayId) {
         stayService.delete(stayId);
     }
+
+    @GetMapping(value = "/stays/reservations/{stayId}")
+    public List<Reservation> listReservations(@PathVariable Long stayId, Principal principal) {
+        return reservationService.listByStay(stayId);
+    }
+
 }

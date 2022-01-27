@@ -1,8 +1,10 @@
 package com.usc.staybooking.service;
 
+import com.usc.staybooking.exception.StayDeleteException;
 import com.usc.staybooking.exception.StayNotFoundException;
 import com.usc.staybooking.model.*;
 import com.usc.staybooking.repository.LocationRepository;
+import com.usc.staybooking.repository.ReservationRepository;
 import com.usc.staybooking.repository.StayRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,14 +20,16 @@ import java.util.stream.Collectors;
 public class StayService {
     private StayRepository stayRepository;
     private LocationRepository locationRepository;
+    private ReservationRepository reservationRepository;
     private ImageStorageService imageStorageService;
     private GeoEncodingService geoEncodingService;
 
 
     @Autowired
-    public StayService(StayRepository stayRepository, LocationRepository locationRepository, ImageStorageService imageStorageService, GeoEncodingService geoEncodingService) {
+    public StayService(StayRepository stayRepository, LocationRepository locationRepository, ReservationRepository reservationRepository, ImageStorageService imageStorageService, GeoEncodingService geoEncodingService) {
         this.stayRepository = stayRepository;
         this.locationRepository = locationRepository;
+        this.reservationRepository = reservationRepository;
         this.imageStorageService = imageStorageService;
         this.geoEncodingService = geoEncodingService;
     }
@@ -65,6 +69,10 @@ public class StayService {
     }
 
     public void delete(Long stayId) {
+        List<Reservation> reservations = reservationRepository.findByStayAndCheckoutDateAfter(new Stay.Builder().setId(stayId).build(), LocalDate.now());
+        if (reservations != null && reservations.size() > 0) {
+            throw new StayDeleteException("Cannot delete stay with active reservation");
+        }
         stayRepository.deleteById(stayId);
     }
 }

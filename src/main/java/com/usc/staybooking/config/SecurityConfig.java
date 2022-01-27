@@ -39,6 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/stays").hasAuthority("ROLE_HOST")
                 .antMatchers("/stays/*").hasAuthority("ROLE_HOST")
                 .antMatchers("/search").hasAuthority("ROLE_GUEST")
+                .antMatchers("/reservations").hasAuthority("ROLE_GUEST")
                 .anyRequest().authenticated()
                 .and()
                 .csrf()
