@@ -25,9 +25,8 @@ public class StayController {
     }
 
     @GetMapping(value = "/stays")
-    public List<Stay> listStays(@RequestParam(name = "host") String hostName) {
-        return stayService.listByUser(hostName);
-//        return stayService.findByHost(principal.getName());
+    public List<Stay> listStays(Principal principal) {
+        return stayService.listByUser(principal.getName());
     }
 
     @GetMapping(value = "/stays/{stayId}")
